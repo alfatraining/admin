@@ -42,7 +42,6 @@
       }
 
       $this.chosen({
-        // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
         allow_single_deselect: true,
         search_contains: true,
         disable_search_threshold: 10,

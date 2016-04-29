@@ -14,6 +14,7 @@
   'use strict';
 
   var $window = $(window);
+  var _ = window._;
   var NAMESPACE = 'qor.fixer';
   var EVENT_ENABLE = 'enable.' + NAMESPACE;
   var EVENT_DISABLE = 'disable.' + NAMESPACE;
