@@ -557,7 +557,7 @@ $('[data-toggle="qor.datepicker"]').materialDatePicker({ format : 'YYYY-MM-DD', 
 
   QorChooserSortable.DEFAULTS = {};
 
-  QorChooserSortable.LIST_HTML = '<li data-index=[[index]] data-value=[[value]]><span>[[value]]</span><i class="material-icons qor-dragable__list-handle">reorder</i><i class="material-icons qor-dragable__list-delete">clear</i></li>';
+  QorChooserSortable.LIST_HTML = '<li data-index=[[index]] data-value=[[value]]><span>[[value]]</span><i class="material-icons qor-dragable__list-handle">swap_vert</i><i class="material-icons qor-dragable__list-delete">clear</i></li>';
 
   QorChooserSortable.plugin = function (options) {
     return this.each(function () {

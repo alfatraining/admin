@@ -892,8 +892,11 @@
     cursor: pointer; }
   .qor-dragable .qor-dragable__list li {
     list-style: none;
-    margin: 8px -8px;
-    padding: 8px; }
+    margin: 0;
+    padding: 8px;
+    border-bottom: 1px solid rgba(0,0,0, 0.12); }
+    .qor-dragable .qor-dragable__list li:hover {
+      background-color: rgba(0,0,0, 0.06); }
 
 .qor-dragable .chosen-container-multi .chosen-choices li.search-field input[type=text] {
   width: auto !important; }
