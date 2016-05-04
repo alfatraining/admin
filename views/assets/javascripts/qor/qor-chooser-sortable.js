@@ -14,11 +14,11 @@
   'use strict';
 
   var Mustache = window.Mustache;
+  var Sortable = window.Sortable;
   var NAMESPACE = 'qor.chooser.sortable';
   var EVENT_ENABLE = 'enable.' + NAMESPACE;
   var EVENT_DISABLE = 'disable.' + NAMESPACE;
   var CLASS_MULTI = '.chosen-container-multi';
-  var CLASS_DEFAULT = 'chosen-default';
   var CLASS_CHOSE = '.search-choice';
   var CLASS_SORTABLE_BODY = '.qor-dragable';
   var CLASS_SORTABLE = '.qor-dragable__list';
@@ -42,7 +42,7 @@
       this.$parent = $parent;
 
       var sortEle = $parent.find(CLASS_SORTABLE)[0];
-      var sort = Sortable.create(sortEle, {
+      Sortable.create(sortEle, {
           animation: 150,
           handle: CLASS_SORTABLE_HANDLE,
           filter: CLASS_SORTABLE_DELETE,
@@ -56,7 +56,7 @@
             self.removeItems(eleIndex);
           },
           onUpdate: function (evt){
-            var item = evt.item;
+            // var item = evt.item;
           }
       });
 
@@ -96,7 +96,7 @@
           this.addItems(params.selected);
         }
 
-      }.bind(this))
+      }.bind(this));
 
     },
 
@@ -121,7 +121,7 @@
 
     destroy: function () {
       this.$element.chosen('destroy').removeData(NAMESPACE);
-    },
+    }
   };
 
   QorChooserSortable.DEFAULTS = {};

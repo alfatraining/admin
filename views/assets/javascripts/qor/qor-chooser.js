@@ -31,7 +31,6 @@
 
     init: function () {
       var $this = this.$element;
-      var self = this;
 
       if (!$this.prop('multiple')) {
         if ($this.children('[selected]').length) {
@@ -80,7 +79,7 @@
 
     destroy: function () {
       this.$element.chosen('destroy').removeData(NAMESPACE);
-    },
+    }
   };
 
   QorChooser.DEFAULTS = {};

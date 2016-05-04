@@ -127,7 +127,6 @@
       var $this = this.$element;
       var slideout = this.$slideout.get(0);
       var target = e.target;
-      var dismissible;
       var $target;
       var data;
 
@@ -141,7 +140,6 @@
       }
 
       while (target !== document) {
-        dismissible = false;
         $target = $(target);
 
         if ($target.prop('disabled')) {
@@ -166,8 +164,11 @@
           break;
         } else if ($target.data('url')) {
           e.preventDefault();
-          data = $target.data();
-          this.load(data.url, data);
+          if (!this.loading && !$target.hasClass(CLASS_IS_SELECTED)) {
+            $this.one(EVENT_SHOW, toggleClass);
+            data = $target.data();
+            this.load(data.url, data);
+          }
           break;
         } else {
           if ($target.is('a')) {
@@ -263,7 +264,7 @@
           },
           complete: function () {
             $submit.prop('disabled', false);
-          },
+          }
         });
       }
     },
@@ -408,11 +409,11 @@
             } else {
               errors = response.responseText;
             }
-            window.alert(response.responseText);
+            window.alert(errors);
           }, this),
           complete: $.proxy(function () {
             this.loading = false;
-          }, this),
+          }, this)
         });
       }, this);
 
@@ -439,7 +440,6 @@
         return;
       }
 
-      /*jshint expr:true */
       $slideout.addClass(CLASS_IS_SHOWN).get(0).offsetWidth;
       $slideout.
         one(EVENT_TRANSITIONEND, $.proxy(this.shown, this)).
@@ -516,12 +516,12 @@
       this.unbind();
       this.unbuild();
       this.$element.removeData(NAMESPACE);
-    },
+    }
   };
 
   QorSlideout.DEFAULTS = {
     title: false,
-    content: false,
+    content: false
   };
 
   QorSlideout.TEMPLATE = (
