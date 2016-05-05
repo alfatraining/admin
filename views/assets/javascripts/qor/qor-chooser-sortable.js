@@ -47,16 +47,30 @@
           handle: CLASS_SORTABLE_HANDLE,
           filter: CLASS_SORTABLE_DELETE,
 
-          onFilter: function (evt){
+          onFilter: function (e){
             // TODO
-            var $ele = $(evt.item);
+            var $ele = $(e.item);
             var eleIndex = $ele.data('index');
 
             $ele.remove();
             self.removeItems(eleIndex);
           },
-          onUpdate: function (evt){
-            // var item = evt.item;
+          onUpdate: function (e){
+            var newIndex = e.newIndex;
+            var $ele = $(e.item);
+            var eleIndex = $ele.data('index');
+            var $targetOption = $this.find('option[data-index="' + eleIndex + '"]');
+
+            $targetOption.remove();
+
+            if (newIndex == 0){
+              $this.prepend($targetOption);
+            } else {
+              $this.find('option:nth-child(' + newIndex + ')').after($targetOption);
+            }
+
+
+
           }
       });
 

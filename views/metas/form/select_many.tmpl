@@ -4,11 +4,11 @@
     {{meta_label .Meta}}
   </label>
 
-  <!-- <div class="qor-field__show">
+  <div class="qor-field__show">
     {{range $value := $current_values}}
       {{stringify $value}}
     {{end}}
-  </div> -->
+  </div>
 
 
   <div class="qor-field__edit qor-field__block qor-dragable">
@@ -25,7 +25,7 @@
       {{end}}
     </ul>
 
-    <select class="qor-field__input" id="{{.InputId}}" data-toggle="qor.chooser.sortable" data-placeholder="{{t "qor_admin.form.enter_search_term" "Enter Search Term"}}" name="{{.InputName}}" multiple {{if not (has_update_permission .Meta)}}disabled{{end}}>
+    <select class="qor-field__input aaaa" id="{{.InputId}}" data-toggle="qor.chooser.sortable" data-placeholder="{{t "qor_admin.form.enter_search_term" "Enter Search Term"}}" name="{{.InputName}}" multiple {{if not (has_update_permission .Meta)}}disabled{{end}}>
       {{range $values := (call .CollectionValue)}}
         {{if (is_included $current_values (index $values 0))}}
           <option value="{{index $values 0}}" data-index="{{index $values 0}}" data-value="{{index $values 1}}" selected>{{index $values 1}}</option>
