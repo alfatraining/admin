@@ -65,10 +65,6 @@ func getField(fields []*gorm.StructField, name string) (*gorm.StructField, bool)
 	return nil, false
 }
 
-func (meta *Meta) GetBaseResource() *Resource {
-	return meta.baseResource
-}
-
 func (meta *Meta) setBaseResource(base *Resource) {
 	res := meta.Resource
 	res.base = base
