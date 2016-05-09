@@ -260,6 +260,7 @@ func (context *Context) renderMeta(meta *Meta, value interface{}, prefix []strin
 
 func (context *Context) isEqual(value interface{}, hasValue interface{}) bool {
 	var result string
+
 	if reflect.Indirect(reflect.ValueOf(hasValue)).Kind() == reflect.Struct {
 		scope := &gorm.Scope{Value: hasValue}
 		result = fmt.Sprint(scope.PrimaryKeyValue())
@@ -311,7 +312,7 @@ func (context *Context) isIncluded(value interface{}, hasValue interface{}) bool
 	}
 
 	for _, key := range primaryKeys {
-		if fmt.Sprintf("%v", key) == result {
+		if fmt.Sprint(key) == result {
 			return true
 		}
 	}
