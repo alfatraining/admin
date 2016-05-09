@@ -15,6 +15,7 @@
 
   var Mustache = window.Mustache;
   var Sortable = window.Sortable;
+  var _ = window._;
   var NAMESPACE = 'qor.chooser.sortable';
   var EVENT_ENABLE = 'enable.' + NAMESPACE;
   var EVENT_DISABLE = 'disable.' + NAMESPACE;
@@ -24,6 +25,7 @@
   var CLASS_SORTABLE = '.qor-dragable__list';
   var CLASS_SORTABLE_HANDLE = '.qor-dragable__list-handle';
   var CLASS_SORTABLE_DELETE = '.qor-dragable__list-delete';
+  var CLASS_SORTABLE_DATA = '.qor-dragable__list-data';
 
   function QorChooserSortable(element, options) {
     this.$element = $(element);
@@ -38,14 +40,18 @@
       var $this = this.$element;
       var $parent = $this.parents(CLASS_SORTABLE_BODY);
       var self = this;
+
+      this.$selector = $parent.find(CLASS_SORTABLE_DATA);
       this.$sortableList = $parent.find(CLASS_SORTABLE);
       this.$parent = $parent;
 
       var sortEle = $parent.find(CLASS_SORTABLE)[0];
-      Sortable.create(sortEle, {
+
+      this.sortable = Sortable.create(sortEle, {
           animation: 150,
           handle: CLASS_SORTABLE_HANDLE,
           filter: CLASS_SORTABLE_DELETE,
+          dataIdAttr: 'data-index',
 
           onFilter: function (e){
             // TODO
@@ -55,21 +61,9 @@
             $ele.remove();
             self.removeItems(eleIndex);
           },
-          onUpdate: function (e){
-            var newIndex = e.newIndex;
-            var $ele = $(e.item);
-            var eleIndex = $ele.data('index');
-            var $targetOption = $this.find('option[data-index="' + eleIndex + '"]');
+          onUpdate: function (){
 
-            $targetOption.remove();
-
-            if (newIndex == 0){
-              $this.prepend($targetOption);
-            } else {
-              $this.find('option:nth-child(' + newIndex + ')').after($targetOption);
-            }
-
-
+            self.renderOption();
 
           }
       });
@@ -99,6 +93,7 @@
       .on('change', function (e,params) {
         var $target = $(e.target);
         var $chosenMulti = $target.next(CLASS_MULTI);
+        var selected = params.selected;
 
         if (!$chosenMulti.size()){
           return;
@@ -106,8 +101,8 @@
 
         $parent.find(CLASS_CHOSE).hide();
 
-        if (params.selected){
-          this.addItems(params.selected);
+        if (selected){
+          this.addItems(selected);
         }
 
       }.bind(this));
@@ -118,12 +113,26 @@
       return Mustache.render(QorChooserSortable.LIST_HTML, data);
     },
 
+    renderOption: function () {
+      var indexArr = this.sortable.toArray();
+      var $selector = this.$selector;
+
+      $selector.empty();
+
+      _.each(indexArr,function(id){
+        $selector.append( Mustache.render(QorChooserSortable.OPTION_HTML, ({'value': id})));
+      });
+
+    },
+
     removeItems: function (index) {
       var $this = this.$element;
       var targetOption = $this.find('[data-index="' + index + '"]');
       var optionArrayIndex = $this.find('option').index(targetOption);
 
       this.$parent.find(CLASS_CHOSE).find('[data-option-array-index="' + optionArrayIndex + '"]').click();
+
+      this.renderOption();
     },
 
     addItems: function (index) {
@@ -131,16 +140,19 @@
       var data = $this.find('option[value="' + index + '"]').data();
 
       this.$sortableList.append(this.renderItem(data));
+      this.renderOption();
     },
 
     destroy: function () {
+      this.sortable.destroy();
       this.$element.chosen('destroy').removeData(NAMESPACE);
     }
   };
 
   QorChooserSortable.DEFAULTS = {};
 
-  QorChooserSortable.LIST_HTML = '<li data-index=[[index]] data-value=[[value]]><span>[[value]]</span><i class="material-icons qor-dragable__list-handle">swap_vert</i><i class="material-icons qor-dragable__list-delete">clear</i></li>';
+  QorChooserSortable.LIST_HTML = '<li data-index=[[index]] data-value=[[value]]><span>[[value]]</span><i class="material-icons qor-dragable__list-delete">clear</i><i class="material-icons qor-dragable__list-handle">swap_vert</i></li>';
+  QorChooserSortable.OPTION_HTML = '<option selected value=[[value]]></option>';
 
   QorChooserSortable.plugin = function (options) {
     return this.each(function () {
