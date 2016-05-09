@@ -259,8 +259,7 @@ func (context *Context) renderMeta(meta *Meta, value interface{}, prefix []strin
 }
 
 func (context *Context) isEqual(value interface{}, hasValue interface{}) bool {
-	var source, result string
-
+	var result string
 	if reflect.Indirect(reflect.ValueOf(hasValue)).Kind() == reflect.Struct {
 		scope := &gorm.Scope{Value: hasValue}
 		result = fmt.Sprint(scope.PrimaryKeyValue())
