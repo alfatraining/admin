@@ -33,3 +33,14 @@
         width: auto !important;
     }
 }
+
+.qor-sortable{
+    .qor-fieldset{
+        padding-top: 24px;
+    }
+    .qor-sortable__button{
+        position: absolute;
+        top: 6px;
+        right: 42px;
+    }
+}
