@@ -38,9 +38,14 @@
     .qor-fieldset{
         padding-top: 24px;
     }
-    .qor-sortable__button{
+    .qor-sortable__change{
         position: absolute;
-        top: 6px;
+        top: 12px;
         right: 42px;
+    }
+    .qor-sortable__button,.qor-sortable__button-move{
+        height: 24px;
+        line-height: 24px;
+        font-size: 12px;
     }
 }

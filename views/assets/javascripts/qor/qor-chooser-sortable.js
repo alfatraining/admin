@@ -151,7 +151,7 @@
 
   QorChooserSortable.DEFAULTS = {};
 
-  QorChooserSortable.LIST_HTML = '<li data-index=[[index]] data-value=[[value]]><span>[[value]]</span><i class="material-icons qor-dragable__list-delete">clear</i><i class="material-icons qor-dragable__list-handle">swap_vert</i></li>';
+  QorChooserSortable.LIST_HTML = '<li data-index=[[index]] data-value=[[value]]><span>[[value]]</span><i class="material-icons qor-dragable__list-delete">clear</i><i class="material-icons qor-dragable__list-handle">drag_handle</i></li>';
   QorChooserSortable.OPTION_HTML = '<option selected value=[[value]]></option>';
 
   QorChooserSortable.plugin = function (options) {
