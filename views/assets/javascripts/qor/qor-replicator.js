@@ -18,6 +18,7 @@
   var EVENT_DISABLE = 'disable.' + NAMESPACE;
   var EVENT_CLICK = 'click.' + NAMESPACE;
   var IS_TEMPLATE = 'is-template';
+  var IS_DELETE = 'is-delete';
 
   function QorReplicator(element, options) {
     this.$element = $(element);
@@ -158,6 +159,7 @@
         // Enable all JavaScript components within the fieldset
         $item.trigger('enable');
       }
+
       e.stopPropagation();
     },
 
@@ -174,10 +176,12 @@
         $alert = $(options.alertTemplate.replace('{{name}}', this.parseName($item)));
         $alert.find(options.undoClass).one(EVENT_CLICK, function () {
           $alert.remove();
-          $item.children('.hidden').removeClass('hidden').show();
+          $item.removeClass(IS_DELETE).children('.hidden').removeClass('hidden').show();
         });
-        $item.append($alert);
+        $item.addClass(IS_DELETE).append($alert);
       }
+
+
     },
 
     parseName: function ($item) {

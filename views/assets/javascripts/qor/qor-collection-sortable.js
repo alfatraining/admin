@@ -19,8 +19,16 @@
   var EVENT_DISABLE = 'disable.' + NAMESPACE;
   var EVENT_CLICK = 'click.' + NAMESPACE;
   var CLASS_ITEM = '.qor-sortable__item';
-  var CLASS_BUTTON = '.qor-sortable__button';
+  var CLASS_ITEM_NEW = '.qor-sortable__item-new';
+  var CLASS_BUTTON_CHANGE = '.qor-sortable__button-change';
+  var CLASS_BUTTON_DONE = '.qor-sortable__button-done';
+  var CLASS_BUTTON_ADD = '.qor-sortable__button-add';
+  var CLASS_BUTTON_DELETE = '.qor-sortable__button-delete';
+  var CLASS_BUTTON_MOVE = '.qor-sortable__button-move';
   var CLASS_ACTION = '.qor-sortable__action';
+  var CLASS_ACTION_NEW = '.qor-sortable__action-new';
+  var CLASS_ACTION_POSITION = '.qor-sortable__action-position';
+  var IS_DELETE = '.is-delete';
 
   function QorCollectionSortable(element, options) {
     this.$element = $(element);
@@ -32,9 +40,6 @@
     constructor: QorCollectionSortable,
 
     init: function () {
-      var $this = this.$element;
-
-      this.$item = $this.find(CLASS_ITEM);
       this.bind();
       this.initItemOrder();
     },
@@ -48,36 +53,100 @@
     },
 
     initItemOrder: function () {
-      var orderData;
+      var $this = this.$element,
+          $item = $this.find(CLASS_ITEM).filter(':visible').not(IS_DELETE),
+          $select = $item.find(CLASS_ACTION).find(CLASS_ACTION_POSITION),
+          orderData = {},
+          itemTotal = $item.size();
 
-      this.$item.each(function(){
+      if ($select.size()){
+        $select.remove();
+      }
+
+      $item.each(function(index){
         var $this = $(this);
         var $action = $this.find(CLASS_ACTION);
 
-        orderData = $this.data();
+
         orderData.isSelected = false;
+        orderData.itemTotal = itemTotal;
 
-        $action.prepend('<select></select>');
+        orderData.itemIndex = index + 1;
 
-        for (var i = 1; i <= orderData.itemTotal; i++) {
+        $action.prepend('<select class="qor-sortable__action-position"></select>');
+
+        for (var i = 1; i <= itemTotal; i++) {
           orderData.index = i;
-          if ((orderData.itemIndex + 1) == i){
+
+          if (orderData.itemIndex == i){
             orderData.isSelected = true;
           } else {
             orderData.isSelected = false;
           }
+
           $action.find('select').append(Mustache.render(QorCollectionSortable.OPTION_HTML, orderData));
         }
+
+        $this.data(orderData);
 
       });
 
     },
 
-    click: function (e) {
-      var $target = $(e.target);
+    moveItem: function ($ele) {
+      var $current = $ele.closest(CLASS_ITEM),
+          currentPosition = $current.data().itemIndex,
+          targetPosition = $current.find(CLASS_ACTION_POSITION).val(),
+          step,
 
-      if ($target.is(CLASS_BUTTON)){
-        $target.hide().next(CLASS_ACTION).show();
+          $target = $(CLASS_ITEM).filter(function(){
+            return $(this).data().itemIndex == targetPosition;
+          });
+
+
+      if (targetPosition == 1) {
+        $target.before($current.fadeOut('slow').fadeIn('slow'));
+      } else {
+        $target.after($current.fadeOut('slow').fadeIn('slow'));
+      }
+
+      this.initItemOrder();
+
+    },
+
+    click: function (e) {
+      var $target = $(e.target),
+          $element = this.$element,
+
+          $this = this.$element,
+          $newItem = $this.find(CLASS_ITEM_NEW).filter(':visible'),
+
+
+      if ($target.is(CLASS_BUTTON_MOVE)){
+        this.moveItem($target);
+      }
+
+      if ($target.is(CLASS_BUTTON_DONE)){
+        $target.hide();
+        $element.find(CLASS_ACTION).hide();
+
+        $element.find(CLASS_BUTTON_CHANGE).show();
+        $element.find(CLASS_BUTTON_ADD).show();
+        $element.find(CLASS_BUTTON_DELETE).show();
+      }
+
+      if ($target.is(CLASS_BUTTON_CHANGE)){
+        $target.hide();
+
+        $element.find(CLASS_BUTTON_DONE).show();
+        $element.find(CLASS_ACTION).show();
+        $element.find(CLASS_BUTTON_ADD).hide();
+        $element.find(CLASS_BUTTON_DELETE).hide();
+
+        // TODO: need init item orders if have new items
+        // if ($newItem.find())
+        //
+
       }
 
     },
@@ -88,7 +157,9 @@
   };
 
   QorCollectionSortable.DEFAULTS = {};
-  QorCollectionSortable.OPTION_HTML = '<option [[#isSelected]]selected[[/isSelected]]>[[index]] of [[itemTotal]]</option>';
+
+  QorCollectionSortable.OPTION_HTML = '<option value="[[index]]" [[#isSelected]]selected[[/isSelected]]>[[index]] of [[itemTotal]]</option>';
+
 
   QorCollectionSortable.plugin = function (options) {
     return this.each(function () {
@@ -97,9 +168,6 @@
       var fn;
 
       if (!data) {
-        if (!$.fn.chosen) {
-          return;
-        }
 
         if (/destroy/.test(options)) {
           return;
@@ -113,6 +181,8 @@
       }
     });
   };
+
+  $.fn.QorCollectionSortable = QorCollectionSortable.plugin;
 
   $(function () {
     var selector = '[data-toggle="qor.collection.sortable"]';

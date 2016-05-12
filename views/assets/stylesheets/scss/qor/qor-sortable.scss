@@ -35,15 +35,21 @@
 }
 
 .qor-sortable{
+    position: relative;
     .qor-fieldset{
         padding-top: 24px;
+    }
+    .qor-sortable__button{
+        position: absolute;
+        top: -38px;
+        right: 0;
     }
     .qor-sortable__change{
         position: absolute;
         top: 12px;
-        right: 42px;
+        right: 24px;
     }
-    .qor-sortable__button,.qor-sortable__button-move{
+    .qor-sortable__button button,.qor-sortable__button-move{
         height: 24px;
         line-height: 24px;
         font-size: 12px;
