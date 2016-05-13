@@ -66,6 +66,7 @@
         $template.data(IS_TEMPLATE, true).hide();
         this.parse();
       }
+
       this.bind();
     },
 
@@ -77,9 +78,12 @@
 
       this.template = this.template.replace(/(\w+)\="(\S*\[\d+\]\S*)"/g, function (attribute, name, value) {
         value = value.replace(/^(\S*)\[(\d+)\]([^\[\]]*)$/, function (input, prefix, index, suffix) {
+
           if (input === value) {
             if (name === 'name') {
-              i = index;
+              if (index > i){
+                i = index;
+              }
             }
 
             return (prefix + '[{{index}}]' + suffix);
