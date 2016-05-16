@@ -54,12 +54,13 @@
     initItemOrder: function (resetResource) {
       var $item = this.$element.find(CLASS_ITEM).filter(':visible').not(IS_DELETE);
 
+      // return false if haven't any item
       if (!$item.size()){
         return;
       }
 
       // hide change position button if just 1 item
-      if ($item.size() == 1){
+      if (!resetResource && $item.size() == 1){
         $(CLASS_BUTTON_CHANGE).hide();
         return;
       }
@@ -102,13 +103,7 @@
 
         for (var i = 1; i <= itemTotal; i++) {
           orderData.index = i;
-
-          if (orderData.itemIndex == i){
-            orderData.isSelected = true;
-          } else {
-            orderData.isSelected = false;
-          }
-
+          ( orderData.itemIndex == i ) ? ( orderData.isSelected = true ) : ( orderData.isSelected = false );
           $action.find('select').append(Mustache.render(QorCollectionSortable.OPTION_HTML, orderData));
         }
 
@@ -118,7 +113,7 @@
               newResourceName,
               $resource = $(this).find('[name^="' + resourceNamePrefix + '"]');
 
-          $resource.each(function () {
+          $resource.size() && $resource.each(function () {
             resourceName = $(this).prop('name');
             newResourceName = '[' + orderData.itemIndex + ']';
             resourceName = resourceName.replace(/\[\d+\]/,newResourceName);
@@ -135,14 +130,25 @@
       var $current = $ele.closest(CLASS_ITEM),
           currentPosition = $current.data().itemIndex,
           targetPosition = $current.find(CLASS_ACTION_POSITION).val(),
+          insertPosition,
+          $target;
 
-          $target = $(CLASS_ITEM).filter(function(){
-            return $(this).data().itemIndex == targetPosition;
-          });
 
       if (targetPosition == currentPosition) {
         return;
       }
+
+      if (targetPosition == 1) {
+        insertPosition = 1;
+      } else if (targetPosition < currentPosition) {
+        insertPosition = targetPosition - 1;
+      } else {
+        insertPosition = targetPosition
+      }
+
+      $target = $(CLASS_ITEM).filter(function(){
+        return $(this).data().itemIndex == insertPosition;
+      });
 
       if (targetPosition == 1) {
         $target.before($current.fadeOut('slow').fadeIn('slow'));
@@ -151,8 +157,6 @@
       }
 
       this.initItemOrder(true);
-
-      // TODO: scroll to targetPosition after move item
 
     },
 
@@ -240,8 +244,6 @@
       }
     });
   };
-
-  $.fn.QorCollectionSortable = QorCollectionSortable.plugin;
 
   $(function () {
     var selector = '[data-toggle="qor.collection.sortable"]';
