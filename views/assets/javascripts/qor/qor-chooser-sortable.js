@@ -18,14 +18,17 @@
   var _ = window._;
   var NAMESPACE = 'qor.chooser.sortable';
   var EVENT_ENABLE = 'enable.' + NAMESPACE;
+  var EVENT_CLICK = 'click.' + NAMESPACE;
   var EVENT_DISABLE = 'disable.' + NAMESPACE;
   var CLASS_MULTI = '.chosen-container-multi';
   var CLASS_CHOSE = '.search-choice';
+  var CLASS_CHOSE_CONTAINER = '.chosen-container';
   var CLASS_SORTABLE_BODY = '.qor-dragable';
   var CLASS_SORTABLE = '.qor-dragable__list';
   var CLASS_SORTABLE_HANDLE = '.qor-dragable__list-handle';
   var CLASS_SORTABLE_DELETE = '.qor-dragable__list-delete';
   var CLASS_SORTABLE_DATA = '.qor-dragable__list-data';
+  var CLASS_SORTABLE_BUTTON_ADD = '.qor-dragable__button-add';
 
   function QorChooserSortable(element, options) {
     this.$element = $(element);
@@ -62,9 +65,7 @@
             self.removeItems(eleIndex);
           },
           onUpdate: function (){
-
             self.renderOption();
-
           }
       });
 
@@ -79,8 +80,9 @@
       $this.on('chosen:ready', function (e,chosen) {
 
         $(chosen.chosen.search_field).attr('placeholder',this.$element.data('placeholder'));
-
         $parent.find(CLASS_CHOSE).hide();
+        $parent.find(CLASS_CHOSE_CONTAINER).hide();
+
       }.bind(this));
 
       $this.chosen({
@@ -107,6 +109,21 @@
 
       }.bind(this));
 
+      this.bind();
+
+    },
+
+    bind: function () {
+      this.$parent.on(EVENT_CLICK, CLASS_SORTABLE_BUTTON_ADD,  this.show.bind(this));
+    },
+
+    unbind: function () {
+      this.$parent.off(EVENT_CLICK, CLASS_SORTABLE_BUTTON_ADD, this.show);
+    },
+
+    show: function () {
+      this.$parent.find(CLASS_CHOSE_CONTAINER).show().find('.search-field input').click();
+      this.$parent.find(CLASS_SORTABLE_BUTTON_ADD).hide();
     },
 
     renderItem: function (data) {
@@ -145,6 +162,7 @@
 
     destroy: function () {
       this.sortable.destroy();
+      this.unbind();
       this.$element.chosen('destroy').removeData(NAMESPACE);
     }
   };
