@@ -26,7 +26,6 @@
   var CLASS_BUTTON_MOVE = '.qor-sortable__button-move';
   var CLASS_ACTION = '.qor-sortable__action';
   var CLASS_ACTION_POSITION = '.qor-sortable__action-position';
-  var CLASS_ACTION_NEW = '.qor-sortable__item-new';
   var IS_DELETE = '.is-delete';
 
   function QorCollectionSortable(element, options) {
@@ -58,13 +57,6 @@
       if (!$item.size()){
         return;
       }
-
-      // hide change position button if just 1 item
-      if (!resetResource && $item.size() == 1){
-        $(CLASS_BUTTON_CHANGE).hide();
-        return;
-      }
-
 
       var $select = $item.find(CLASS_ACTION).find(CLASS_ACTION_POSITION),
           orderData = {},
@@ -143,7 +135,7 @@
       } else if (targetPosition < currentPosition) {
         insertPosition = targetPosition - 1;
       } else {
-        insertPosition = targetPosition
+        insertPosition = targetPosition;
       }
 
       $target = $(CLASS_ITEM).filter(function(){
@@ -162,7 +154,8 @@
 
     click: function (e) {
       var $target = $(e.target),
-          $element = this.$element;
+          $element = this.$element,
+          $item = $element.find(CLASS_ITEM).filter(':visible').not(IS_DELETE);
 
       if ($target.is(CLASS_BUTTON_MOVE)){
         this.moveItem($target);
@@ -177,7 +170,7 @@
         $element.find(CLASS_BUTTON_DELETE).show();
       }
 
-      if ($target.is(CLASS_BUTTON_CHANGE)){
+      if ($target.is(CLASS_BUTTON_CHANGE) && $item.size()){
         $target.hide();
 
         $element.find(CLASS_BUTTON_DONE).show();
@@ -185,31 +178,8 @@
         $element.find(CLASS_BUTTON_ADD).hide();
         $element.find(CLASS_BUTTON_DELETE).hide();
 
-
-        // need init item orders if have new items
-        if (this.checkNewItem()) {
-          this.initItemOrder();
-        }
-
+        this.initItemOrder();
       }
-
-    },
-
-    checkNewItem: function () {
-      var $items = $(CLASS_ACTION_NEW).filter(':visible'),
-          hasSelect,
-          isNeedInit = false;
-
-      $items.size() && $items.each(function () {
-        hasSelect = $(this).find(CLASS_ACTION_POSITION).size();
-
-        if (!hasSelect){
-          isNeedInit = true;
-        }
-
-      });
-
-      return isNeedInit;
 
     },
 
